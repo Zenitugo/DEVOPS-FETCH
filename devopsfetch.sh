@@ -27,35 +27,41 @@ devopsfetch_help() {
 
 # Function to display active ports
 ports_available() {
+    echo "############################### List of Active Ports #############################"
     if [ -z "$1" ]; then
-        printf "%-15s %-5s %-8s\n" "USER" "PORT" "SERVICE"
+        echo "+----------------------+-------+------------+"
+        printf "| %-20s | %-5s | %-10s |\n" "USER" "PORT" "SERVICE"
+        echo "+----------------------+-------+------------+"
         sudo lsof -i -P -n | grep LISTEN | awk '{
             port = $9
             sub(/.*:/, "", port)
             user = $3
             service = $1
-            if (length(service) > 8) service = substr(service, 1, 8)
-            printf "%-15s %-5s %-8s\n", user, port, service
-        }' | sort -k2 -n | uniq  
-   else
+            if (length(service) > 10) service = substr(service, 1, 10)
+            printf "| %-20s | %-5s | %-10s |\n", user, port, service
+        }' | sort -k2 -n | uniq
+        echo "+----------------------+-------+------------+"
+    else
         echo "Information for port $1:"
-        printf "%-15s %-5s %-8s\n" "USER" "PORT" "SERVICE"
+        echo "+----------------------+-------+------------+"
+        printf "| %-20s | %-5s | %-10s |\n" "USER" "PORT" "SERVICE"
+        echo "+----------------------+-------+------------+"
         result=$(sudo lsof -i :$1 -P -n | grep LISTEN | awk '{
             port = $9
             sub(/.*:/, "", port)
             user = $3
             service = $1
-            if (length(service) > 8) service = substr(service, 1, 8)
-            printf "%-15s %-5s %-8s\n", user, port, service
+            if (length(service) > 10) service = substr(service, 1, 10)
+            printf "| %-20s | %-5s | %-10s |\n", user, port, service
         }')
         if [ -z "$result" ]; then
-            echo "No Service found on Port found $1"
+            printf "| %-20s | %-5s | %-10s |\n" "N/A" "$1" "N/A"
         else
             echo "$result"
         fi
+        echo "+----------------------+-------+------------+"
     fi
 }
-
 
 # Function to display Docker information
 docker_info() {
