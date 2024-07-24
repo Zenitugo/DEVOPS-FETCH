@@ -180,7 +180,7 @@ case "$1" in
         nginx_server_info "$2"
         ;;
     -u|--users)
-        display_users "$2"
+        get_users "$2"
         ;;
     -t|--time)
         if [ -z "$2" ]; then
